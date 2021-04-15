@@ -192,8 +192,6 @@ namespace Vibrancy
         viewOptions.ViewId = -1;
         viewOptions.Material = 0;
 
-        v8::Isolate *isolate = v8::Isolate::GetCurrent();
-
         V8Value vPosition = Nan::Get(options, Nan::New<v8::String>("Position").ToLocalChecked()).ToLocalChecked();
         V8Value vSize = Nan::Get(options, Nan::New<v8::String>("Size").ToLocalChecked()).ToLocalChecked();
 

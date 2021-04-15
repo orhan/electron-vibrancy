@@ -8,7 +8,7 @@
                 "src/Vibrancy.cc",
                 "src/VibrancyHelper.h",
                 "src/vibrancy_win.cc",
-                "src/vibrancy_mac.cc",
+                "src/vibrancy_mac.mm",
                 "src/vibrancy_linux.cc",
                 "src/Init.cc",
             ],
