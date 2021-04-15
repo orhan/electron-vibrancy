@@ -44,6 +44,7 @@ namespace Vibrancy {
                 int X;
                 int Y;
                 int Material;
+                char* MaskImagePath;
             };
             ViewOptions GetOptions(v8::Local<v8::Array> options);
             std::map<int, NSVisualEffectView* > views_;

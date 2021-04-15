@@ -92,6 +92,14 @@ namespace Vibrancy
             [vibrantView
                 setMaterial:(NSVisualEffectMaterial)viewOptions.Material];
         }
+        
+        if (viewOptions.MaskImagePath) {
+            NSString *maskFile = [NSString stringWithUTF8String:viewOptions.MaskImagePath];
+            NSURL *maskFileUrl = [NSURL URLWithString: maskFile];
+            NSImage *image = [[NSImage alloc]initWithContentsOfURL:maskFileUrl];
+            
+            [vibrantView setMaskImage:image];
+        }
 
         [view.window.contentView
             addSubview:vibrantView
@@ -191,6 +199,7 @@ namespace Vibrancy
         viewOptions.Y = 0;
         viewOptions.ViewId = -1;
         viewOptions.Material = 0;
+        viewOptions.MaskImagePath = (char*) "";
 
         V8Value vPosition = Nan::Get(options, Nan::New<v8::String>("Position").ToLocalChecked()).ToLocalChecked();
         V8Value vSize = Nan::Get(options, Nan::New<v8::String>("Size").ToLocalChecked()).ToLocalChecked();
@@ -198,6 +207,7 @@ namespace Vibrancy
         V8Value vAutoResizeMask = Nan::Get(options, Nan::New<v8::String>("ResizeMask").ToLocalChecked()).ToLocalChecked();
         V8Value vViewId = Nan::Get(options, Nan::New<v8::String>("ViewId").ToLocalChecked()).ToLocalChecked();
         V8Value vMaterial = Nan::Get(options, Nan::New<v8::String>("Material").ToLocalChecked()).ToLocalChecked();
+        V8Value vMaskImagePath = Nan::Get(options, Nan::New<v8::String>("MaskImagePath").ToLocalChecked()).ToLocalChecked();
 
         if (!vMaterial->IsNull() && vMaterial->IsInt32())
         {
@@ -241,6 +251,12 @@ namespace Vibrancy
         if (!vAutoResizeMask->IsNull() && vAutoResizeMask->IsInt32())
         {
             viewOptions.ResizeMask = vAutoResizeMask->Int32Value(Nan::GetCurrentContext()).ToChecked();
+        }
+        
+        if (!vMaskImagePath->IsNull() && vMaskImagePath->IsString())
+        {
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), vMaskImagePath->ToString(Nan::GetCurrentContext()).ToLocalChecked());
+            viewOptions.MaskImagePath = *value;
         }
         return viewOptions;
     }
