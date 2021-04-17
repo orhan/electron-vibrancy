@@ -89,13 +89,12 @@ namespace Vibrancy {
         [vibrantView setState:effectState];
         
         if (!viewOptions.MaskImagePath.empty()) {
-            NSSize windowSize;
-            windowSize.width = viewOptions.Width;
-            windowSize.height = viewOptions.Height;
-            
             NSString *maskFile = [NSString stringWithCString:viewOptions.MaskImagePath.c_str() encoding:[NSString defaultCStringEncoding]];
             NSImage *image = [[NSImage alloc]initWithContentsOfFile:maskFile];
-            [image setCapInsets:NSEdgeInsetsMake(100, 100, 100, 100)];
+            [image setCapInsets:NSEdgeInsetsMake(viewOptions.MaskImageInsetTop, 
+                                                viewOptions.MaskImageInsetLeft, 
+                                                viewOptions.MaskImageInsetBottom, 
+                                                viewOptions.MaskImageInsetRight)];
             [image setResizingMode:(NSImageResizingMode)NSImageResizingModeStretch];
             
             [vibrantView setMaskImage:image];
@@ -156,6 +155,18 @@ namespace Vibrancy {
         
         NSVisualEffectState effectState = GetEffectState(viewOptions.EffectState);
         [vibrantView setState:effectState];
+        
+        if (!viewOptions.MaskImagePath.empty()) {
+            NSString *maskFile = [NSString stringWithCString:viewOptions.MaskImagePath.c_str() encoding:[NSString defaultCStringEncoding]];
+            NSImage *image = [[NSImage alloc]initWithContentsOfFile:maskFile];
+            [image setCapInsets:NSEdgeInsetsMake(viewOptions.MaskImageInsetTop, 
+                                                viewOptions.MaskImageInsetLeft, 
+                                                viewOptions.MaskImageInsetBottom, 
+                                                viewOptions.MaskImageInsetRight)];
+            [image setResizingMode:(NSImageResizingMode)NSImageResizingModeStretch];
+            
+            [vibrantView setMaskImage:image];
+        }
         
         [vibrantView setFrame:NSMakeRect(viewOptions.X,
                                         viewOptions.Y,
@@ -279,6 +290,10 @@ namespace Vibrancy {
         viewOptions.Material = "appearance-based";
         viewOptions.EffectState = "follow-window";
         viewOptions.MaskImagePath = "";
+        viewOptions.MaskImageInsetTop = 0;
+        viewOptions.MaskImageInsetLeft = 0;
+        viewOptions.MaskImageInsetBottom = 0;
+        viewOptions.MaskImageInsetRight = 0;
 
         V8Value vPosition = Nan::Get(options, Nan::New<v8::String>("Position").ToLocalChecked()).ToLocalChecked();
         V8Value vSize = Nan::Get(options, Nan::New<v8::String>("Size").ToLocalChecked()).ToLocalChecked();
@@ -288,6 +303,7 @@ namespace Vibrancy {
         V8Value vMaterial = Nan::Get(options, Nan::New<v8::String>("Material").ToLocalChecked()).ToLocalChecked();
         V8Value vEffectState = Nan::Get(options, Nan::New<v8::String>("EffectState").ToLocalChecked()).ToLocalChecked();
         V8Value vMaskImagePath = Nan::Get(options, Nan::New<v8::String>("MaskImagePath").ToLocalChecked()).ToLocalChecked();
+        V8Value vMaskImageInsets = Nan::Get(options, Nan::New<v8::String>("MaskImageInsets").ToLocalChecked()).ToLocalChecked();
 
         if (!vMaterial->IsNull() && vMaterial->IsString()) {
             v8::String::Utf8Value value(v8::Isolate::GetCurrent(), vMaterial->ToString(Nan::GetCurrentContext()).ToLocalChecked());
@@ -340,6 +356,31 @@ namespace Vibrancy {
         if (!vMaskImagePath->IsNull() && vMaskImagePath->IsString()) {
             v8::String::Utf8Value value(v8::Isolate::GetCurrent(), vMaskImagePath->ToString(Nan::GetCurrentContext()).ToLocalChecked());
             viewOptions.MaskImagePath = std::string(*value);
+        }
+        
+        if (!vMaskImageInsets->IsUndefined() && !vMaskImageInsets->IsNull()) {
+            V8Array vaMaskImageInsets = v8::Local<v8::Array>::Cast(vMaskImageInsets);
+
+            V8Value vTop = Nan::Get(vaMaskImageInsets, Nan::New<v8::String>("top").ToLocalChecked()).ToLocalChecked();
+            V8Value vLeft = Nan::Get(vaMaskImageInsets, Nan::New<v8::String>("left").ToLocalChecked()).ToLocalChecked();
+            V8Value vBottom = Nan::Get(vaMaskImageInsets, Nan::New<v8::String>("bottom").ToLocalChecked()).ToLocalChecked();
+            V8Value vRight = Nan::Get(vaMaskImageInsets, Nan::New<v8::String>("right").ToLocalChecked()).ToLocalChecked();
+
+            if (!vTop->IsNull() && vTop->IsInt32()) {
+                viewOptions.MaskImageInsetTop = vTop->Int32Value(Nan::GetCurrentContext()).ToChecked();
+            }
+
+            if (!vLeft->IsNull() && vLeft->IsInt32()) {
+                viewOptions.MaskImageInsetLeft = vLeft->Int32Value(Nan::GetCurrentContext()).ToChecked();
+            }
+            
+            if (!vBottom->IsNull() && vBottom->IsInt32()) {
+                viewOptions.MaskImageInsetBottom = vBottom->Int32Value(Nan::GetCurrentContext()).ToChecked();
+            }
+            
+            if (!vRight->IsNull() && vRight->IsInt32()) {
+                viewOptions.MaskImageInsetRight = vRight->Int32Value(Nan::GetCurrentContext()).ToChecked();
+            }
         }
         
         return viewOptions;

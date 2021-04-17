@@ -11,9 +11,15 @@ interface Dimensions {
 interface EffectOptions {
   material?: string;
   resizeMask?: number;
-  maskImagePath?: string;
   viewId?: number;
   effectState?: string;
+  maskImagePath?: string;
+  maskImageInsets?: {
+    top: number;
+    left: number;
+    bottom: number;
+    right: number;
+  };
 }
 
 type Options = Dimensions & EffectOptions;
@@ -24,8 +30,9 @@ function AddView(buffer, options: Options) {
     Position: { x: options.x, y: options.y },
     Size: { width: options.width, height: options.height },
     ResizeMask: options.resizeMask,
-    MaskImagePath: options.maskImagePath,
     EffectState: options.effectState,
+    MaskImagePath: options.maskImagePath,
+    MaskImageInsets: options.maskImageInsets,
   };
 
   return Vibrancy.AddView(buffer, viewOptions);
@@ -43,8 +50,9 @@ function UpdateView(buffer, options: Options) {
     Position: { x: options.x, y: options.y },
     Size: { width: options.width, height: options.height },
     ResizeMask: options.resizeMask,
-    MaskImagePath: options.maskImagePath,
     EffectState: options.effectState,
+    MaskImagePath: options.maskImagePath,
+    MaskImageInsets: options.maskImageInsets,
   };
   return Vibrancy.UpdateView(buffer, viewOptions);
 }
@@ -80,8 +88,9 @@ const assignOptions = (
     x: dimensions.x,
     y: dimensions.y,
     resizeMask,
-    maskImagePath: effectOptions.maskImagePath,
     effectState: effectOptions.effectState,
+    maskImagePath: effectOptions.maskImagePath,
+    maskImageInsets: effectOptions.maskImageInsets,
   };
 
   return viewOptions;

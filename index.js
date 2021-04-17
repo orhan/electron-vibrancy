@@ -7,8 +7,9 @@ function AddView(buffer, options) {
         Position: { x: options.x, y: options.y },
         Size: { width: options.width, height: options.height },
         ResizeMask: options.resizeMask,
-        MaskImagePath: options.maskImagePath,
         EffectState: options.effectState,
+        MaskImagePath: options.maskImagePath,
+        MaskImageInsets: options.maskImageInsets,
     };
     return Vibrancy.AddView(buffer, viewOptions);
 }
@@ -23,8 +24,9 @@ function UpdateView(buffer, options) {
         Position: { x: options.x, y: options.y },
         Size: { width: options.width, height: options.height },
         ResizeMask: options.resizeMask,
-        MaskImagePath: options.maskImagePath,
         EffectState: options.effectState,
+        MaskImagePath: options.maskImagePath,
+        MaskImageInsets: options.maskImageInsets,
     };
     return Vibrancy.UpdateView(buffer, viewOptions);
 }
@@ -48,8 +50,9 @@ var assignOptions = function (dimensions, effectOptions) {
         x: dimensions.x,
         y: dimensions.y,
         resizeMask: resizeMask,
-        maskImagePath: effectOptions.maskImagePath,
         effectState: effectOptions.effectState,
+        maskImagePath: effectOptions.maskImagePath,
+        maskImageInsets: effectOptions.maskImageInsets,
     };
     return viewOptions;
 };
