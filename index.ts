@@ -2,7 +2,7 @@ var Vibrancy = require("bindings")("Vibrancy");
 import { BrowserWindow } from "electron";
 
 interface ViewOptions {
-  material?: number;
+  material?: string;
   x: number;
   y: number;
   width: number;
@@ -10,6 +10,7 @@ interface ViewOptions {
   resizeMask?: number;
   maskImagePath?: string;
   viewId?: number;
+  effectState?: string;
 }
 
 function AddView(buffer, options: ViewOptions) {
@@ -19,6 +20,7 @@ function AddView(buffer, options: ViewOptions) {
     Size: { width: options.width, height: options.height },
     ResizeMask: options.resizeMask,
     MaskImagePath: options.maskImagePath,
+    EffectState: options.effectState,
   };
 
   return Vibrancy.AddView(buffer, viewOptions);
@@ -35,6 +37,7 @@ function UpdateView(buffer, options: ViewOptions) {
     Position: { x: options.x, y: options.y },
     Size: { width: options.width, height: options.height },
     ViewId: options.viewId,
+    EffectState: options.effectState,
   };
   return Vibrancy.UpdateView(buffer, viewOptions);
 }
@@ -44,11 +47,7 @@ function DisableVibrancy(buffer) {
 }
 
 const electronVibrancy = {
-  setVibrancy: function (
-    window: BrowserWindow,
-    material: number,
-    maskImagePath?: string
-  ) {
+  setVibrancy: function (window: BrowserWindow, options: ViewOptions) {
     if (window == null) {
       return -1;
     }
@@ -56,20 +55,28 @@ const electronVibrancy = {
     var width = window.getSize()[0];
     var height = window.getSize()[1];
 
-    if (material === null || typeof material === "undefined") {
-      material = 0;
+    if (options.material === null || typeof options.material === "undefined") {
+      options.material = "appearance-based";
+    }
+
+    if (
+      options.effectState === null ||
+      typeof options.effectState === "undefined"
+    ) {
+      options.effectState = "follow-window";
     }
 
     var resizeMask = 2; //auto resize on both axis
 
     var viewOptions: ViewOptions = {
-      material,
+      material: options.material,
       width,
       height,
       x: 0,
       y: 0,
       resizeMask,
-      maskImagePath,
+      maskImagePath: options.maskImagePath,
+      effectState: options.effectState,
     };
 
     return AddView(window.getNativeWindowHandle(), viewOptions);
