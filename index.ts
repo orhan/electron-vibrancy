@@ -1,19 +1,24 @@
 var Vibrancy = require("bindings")("Vibrancy");
 import { BrowserWindow } from "electron";
 
-interface ViewOptions {
-  material?: string;
+interface Dimensions {
   x: number;
   y: number;
   width: number;
   height: number;
+}
+
+interface EffectOptions {
+  material?: string;
   resizeMask?: number;
   maskImagePath?: string;
   viewId?: number;
   effectState?: string;
 }
 
-function AddView(buffer, options: ViewOptions) {
+type Options = Dimensions & EffectOptions;
+
+function AddView(buffer, options: Options) {
   var viewOptions = {
     Material: options.material,
     Position: { x: options.x, y: options.y },
@@ -31,12 +36,14 @@ function RemoveView(buffer, viewId: number) {
   return Vibrancy.RemoveView(buffer, viewOptions);
 }
 
-function UpdateView(buffer, options: ViewOptions) {
+function UpdateView(buffer, options: Options) {
   var viewOptions = {
+    ViewId: options.viewId,
     Material: options.material,
     Position: { x: options.x, y: options.y },
     Size: { width: options.width, height: options.height },
-    ViewId: options.viewId,
+    ResizeMask: options.resizeMask,
+    MaskImagePath: options.maskImagePath,
     EffectState: options.effectState,
   };
   return Vibrancy.UpdateView(buffer, viewOptions);
@@ -46,46 +53,71 @@ function DisableVibrancy(buffer) {
   Vibrancy.SetVibrancy(false, buffer);
 }
 
+const assignOptions = (
+  dimensions: Dimensions,
+  effectOptions: EffectOptions
+): Options => {
+  if (
+    effectOptions.material === null ||
+    typeof effectOptions.material === "undefined"
+  ) {
+    effectOptions.material = "appearance-based";
+  }
+
+  if (
+    effectOptions.effectState === null ||
+    typeof effectOptions.effectState === "undefined"
+  ) {
+    effectOptions.effectState = "follow-window";
+  }
+
+  var resizeMask = 2; //auto resize on both axis
+
+  var viewOptions: Options = {
+    material: effectOptions.material,
+    width: dimensions.width,
+    height: dimensions.height,
+    x: dimensions.x,
+    y: dimensions.y,
+    resizeMask,
+    maskImagePath: effectOptions.maskImagePath,
+    effectState: effectOptions.effectState,
+  };
+
+  return viewOptions;
+};
+
 const electronVibrancy = {
-  setVibrancy: function (window: BrowserWindow, options: ViewOptions) {
+  setVibrancy: function (window: BrowserWindow, effectOptions: EffectOptions) {
     if (window == null) {
       return -1;
     }
 
-    var width = window.getSize()[0];
-    var height = window.getSize()[1];
-
-    if (options.material === null || typeof options.material === "undefined") {
-      options.material = "appearance-based";
-    }
-
-    if (
-      options.effectState === null ||
-      typeof options.effectState === "undefined"
-    ) {
-      options.effectState = "follow-window";
-    }
-
-    var resizeMask = 2; //auto resize on both axis
-
-    var viewOptions: ViewOptions = {
-      material: options.material,
-      width,
-      height,
+    let dimensions: Dimensions = {
+      width: window.getSize()[0],
+      height: window.getSize()[1],
       x: 0,
       y: 0,
-      resizeMask,
-      maskImagePath: options.maskImagePath,
-      effectState: options.effectState,
     };
 
-    return AddView(window.getNativeWindowHandle(), viewOptions);
+    let nativeOptions = assignOptions(dimensions, effectOptions);
+    return AddView(window.getNativeWindowHandle(), nativeOptions);
   },
-  addView: function (window: BrowserWindow, options: ViewOptions) {
-    return AddView(window.getNativeWindowHandle(), options);
+  addView: function (
+    window: BrowserWindow,
+    dimensions: Dimensions,
+    effectOptions: EffectOptions
+  ) {
+    var nativeOptions: Options = assignOptions(dimensions, effectOptions);
+    return AddView(window.getNativeWindowHandle(), nativeOptions);
   },
-  updateView: function (window: BrowserWindow, options: ViewOptions) {
-    return UpdateView(window.getNativeWindowHandle(), options);
+  updateView: function (
+    window: BrowserWindow,
+    dimensions: Dimensions,
+    effectOptions: EffectOptions
+  ) {
+    var nativeOptions: Options = assignOptions(dimensions, effectOptions);
+    return UpdateView(window.getNativeWindowHandle(), nativeOptions);
   },
   removeView: function (window: BrowserWindow, viewId: number) {
     return RemoveView(window.getNativeWindowHandle(), viewId);
