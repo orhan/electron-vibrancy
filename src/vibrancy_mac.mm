@@ -200,7 +200,7 @@ namespace Vibrancy {
         return true;
     }
     
-    NSVisualEffectMaterial GetVibrancyType(std::string material) {
+    NSVisualEffectMaterial VibrancyHelper::GetVibrancyType(std::string material) {
         NSVisualEffectMaterial vibrancyType = NSVisualEffectMaterialAppearanceBased;
         
         if (material == "appearance-based") {
@@ -254,7 +254,7 @@ namespace Vibrancy {
         return vibrancyType;
     }
 
-    NSVisualEffectState GetEffectState(std::string effectState) {
+    NSVisualEffectState VibrancyHelper::GetEffectState(std::string effectState) {
         NSVisualEffectState visualEffectState = NSVisualEffectStateFollowsWindowActiveState;
         
         if (effectState == "follow-window") {
