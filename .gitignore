@@ -40,3 +40,9 @@ build
 
 # Idea IDE
 .idea
+
+13.0.0-beta.12/include/node/
+
+13.0.0-beta.12/
+
+bin/darwin-x64-89/
