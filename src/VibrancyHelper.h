@@ -26,6 +26,7 @@
 #define SRC_VIBRANCYHELPER_H_
 //----------------------------------------------------------------------------
 #include <map>
+#include <string>
 
 #include "./Common.h"
 //----------------------------------------------------------------------------
@@ -44,7 +45,7 @@ namespace Vibrancy {
                 int X;
                 int Y;
                 int Material;
-                char* MaskImagePath;
+                std::string MaskImagePath;
             };
             ViewOptions GetOptions(v8::Local<v8::Array> options);
             std::map<int, NSVisualEffectView* > views_;

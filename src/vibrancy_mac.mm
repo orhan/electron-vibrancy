@@ -82,21 +82,29 @@ namespace Vibrancy
             [vibrantView
                 setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
 
-        // would crash if you give anything other than [0,9]
-        if (viewOptions.Material >= 0 && viewOptions.Material <= 9)
+        // would crash if you give anything other than [0,22]
+        if (viewOptions.Material >= 0 && viewOptions.Material <= 22)
         {
             if (viewOptions.Material > 3 && !IsHigherThanYosemite())
             {
                 return -1;
             }
+            
             [vibrantView
                 setMaterial:(NSVisualEffectMaterial)viewOptions.Material];
         }
         
-        if (viewOptions.MaskImagePath) {
-            NSString *maskFile = [NSString stringWithUTF8String:viewOptions.MaskImagePath];
-            NSURL *maskFileUrl = [NSURL URLWithString: maskFile];
-            NSImage *image = [[NSImage alloc]initWithContentsOfURL:maskFileUrl];
+        [vibrantView setState:(NSVisualEffectState)NSVisualEffectStateActive];
+        
+        if (!viewOptions.MaskImagePath.empty()) {
+            NSSize windowSize;
+            windowSize.width = viewOptions.Width;
+            windowSize.height = viewOptions.Height;
+            
+            NSString *maskFile = [NSString stringWithCString:viewOptions.MaskImagePath.c_str() encoding:[NSString defaultCStringEncoding]];
+            NSImage *image = [[NSImage alloc]initWithContentsOfFile:maskFile];
+            [image setCapInsets:NSEdgeInsetsMake(100, 100, 100, 100)];
+            [image setResizingMode:(NSImageResizingMode)NSImageResizingModeStretch];
             
             [vibrantView setMaskImage:image];
         }
@@ -199,7 +207,7 @@ namespace Vibrancy
         viewOptions.Y = 0;
         viewOptions.ViewId = -1;
         viewOptions.Material = 0;
-        viewOptions.MaskImagePath = (char*) "";
+        viewOptions.MaskImagePath = "";
 
         V8Value vPosition = Nan::Get(options, Nan::New<v8::String>("Position").ToLocalChecked()).ToLocalChecked();
         V8Value vSize = Nan::Get(options, Nan::New<v8::String>("Size").ToLocalChecked()).ToLocalChecked();
@@ -256,8 +264,9 @@ namespace Vibrancy
         if (!vMaskImagePath->IsNull() && vMaskImagePath->IsString())
         {
             v8::String::Utf8Value value(v8::Isolate::GetCurrent(), vMaskImagePath->ToString(Nan::GetCurrentContext()).ToLocalChecked());
-            viewOptions.MaskImagePath = *value;
+            viewOptions.MaskImagePath = std::string(*value);
         }
+        
         return viewOptions;
     }
 
