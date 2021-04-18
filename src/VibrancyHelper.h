@@ -44,10 +44,17 @@ namespace Vibrancy {
                 int Height;
                 int X;
                 int Y;
-                int Material;
+                std::string Material;
+                std::string EffectState;
                 std::string MaskImagePath;
+                int MaskImageInsetTop;
+                int MaskImageInsetLeft;
+                int MaskImageInsetBottom;
+                int MaskImageInsetRight;
             };
             ViewOptions GetOptions(v8::Local<v8::Array> options);
+            NSVisualEffectMaterial GetVibrancyType(std::string material);
+            NSVisualEffectState GetEffectState(std::string effectState);
             std::map<int, NSVisualEffectView* > views_;
             int viewIndex_;
         #endif
