@@ -55,7 +55,7 @@ var assignOptions = function (dimensions, effectOptions) {
         effectState: effectOptions.effectState,
         maskImagePath: effectOptions.maskImagePath,
         maskImageInsets: effectOptions.maskImageInsets,
-        cornerRadius: 0.0,
+        cornerRadius: effectOptions.cornerRadius,
     };
     return viewOptions;
 };
