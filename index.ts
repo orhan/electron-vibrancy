@@ -13,6 +13,7 @@ interface EffectOptions {
   resizeMask?: number;
   viewId?: number;
   effectState?: string;
+  cornerRadius?: number;
   maskImagePath?: string;
   maskImageInsets?: {
     top: number;
@@ -33,6 +34,7 @@ function AddView(buffer, options: Options) {
     EffectState: options.effectState,
     MaskImagePath: options.maskImagePath,
     MaskImageInsets: options.maskImageInsets,
+    CornerRadius: options.cornerRadius,
   };
 
   return Vibrancy.AddView(buffer, viewOptions);
@@ -53,6 +55,7 @@ function UpdateView(buffer, options: Options) {
     EffectState: options.effectState,
     MaskImagePath: options.maskImagePath,
     MaskImageInsets: options.maskImageInsets,
+    CornerRadius: options.cornerRadius,
   };
   return Vibrancy.UpdateView(buffer, viewOptions);
 }
@@ -91,6 +94,7 @@ const assignOptions = (
     effectState: effectOptions.effectState,
     maskImagePath: effectOptions.maskImagePath,
     maskImageInsets: effectOptions.maskImageInsets,
+    cornerRadius: 0.0,
   };
 
   return viewOptions;

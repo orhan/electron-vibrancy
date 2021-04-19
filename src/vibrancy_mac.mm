@@ -99,6 +99,11 @@ namespace Vibrancy {
             
             [vibrantView setMaskImage:image];
         }
+        
+        if (viewOptions.CornerRadius > 0.0) {
+            [vibrantView setWantsLayer:true];
+            [vibrantView.layer setCornerRadius:viewOptions.CornerRadius];
+        }
 
         [view.window.contentView
             addSubview:vibrantView
@@ -166,6 +171,11 @@ namespace Vibrancy {
             [image setResizingMode:(NSImageResizingMode)NSImageResizingModeStretch];
             
             [vibrantView setMaskImage:image];
+        }
+        
+        if (viewOptions.CornerRadius > 0.0) {
+            [vibrantView setWantsLayer:true];
+            [vibrantView.layer setCornerRadius:viewOptions.CornerRadius];
         }
         
         [vibrantView setFrame:NSMakeRect(viewOptions.X,
@@ -294,12 +304,14 @@ namespace Vibrancy {
         viewOptions.MaskImageInsetLeft = 0;
         viewOptions.MaskImageInsetBottom = 0;
         viewOptions.MaskImageInsetRight = 0;
+        viewOptions.CornerRadius = 0.0;
 
         V8Value vPosition = Nan::Get(options, Nan::New<v8::String>("Position").ToLocalChecked()).ToLocalChecked();
         V8Value vSize = Nan::Get(options, Nan::New<v8::String>("Size").ToLocalChecked()).ToLocalChecked();
 
         V8Value vAutoResizeMask = Nan::Get(options, Nan::New<v8::String>("ResizeMask").ToLocalChecked()).ToLocalChecked();
         V8Value vViewId = Nan::Get(options, Nan::New<v8::String>("ViewId").ToLocalChecked()).ToLocalChecked();
+        V8Value vCornerRadius = Nan::Get(options, Nan::New<v8::String>("CornerRadius").ToLocalChecked()).ToLocalChecked();
         V8Value vMaterial = Nan::Get(options, Nan::New<v8::String>("Material").ToLocalChecked()).ToLocalChecked();
         V8Value vEffectState = Nan::Get(options, Nan::New<v8::String>("EffectState").ToLocalChecked()).ToLocalChecked();
         V8Value vMaskImagePath = Nan::Get(options, Nan::New<v8::String>("MaskImagePath").ToLocalChecked()).ToLocalChecked();
@@ -351,6 +363,10 @@ namespace Vibrancy {
 
         if (!vAutoResizeMask->IsNull() && vAutoResizeMask->IsInt32()) {
             viewOptions.ResizeMask = vAutoResizeMask->Int32Value(Nan::GetCurrentContext()).ToChecked();
+        }
+        
+        if (!vCornerRadius->IsNull() && vCornerRadius->IsInt32()) {
+            viewOptions.CornerRadius = vCornerRadius->NumberValue(Nan::GetCurrentContext()).ToChecked();
         }
         
         if (!vMaskImagePath->IsNull() && vMaskImagePath->IsString()) {

@@ -44,6 +44,7 @@ namespace Vibrancy {
                 int Height;
                 int X;
                 int Y;
+                double CornerRadius;
                 std::string Material;
                 std::string EffectState;
                 std::string MaskImagePath;
