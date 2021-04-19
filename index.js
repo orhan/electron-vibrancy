@@ -10,6 +10,7 @@ function AddView(buffer, options) {
         EffectState: options.effectState,
         MaskImagePath: options.maskImagePath,
         MaskImageInsets: options.maskImageInsets,
+        CornerRadius: options.cornerRadius,
     };
     return Vibrancy.AddView(buffer, viewOptions);
 }
@@ -27,6 +28,7 @@ function UpdateView(buffer, options) {
         EffectState: options.effectState,
         MaskImagePath: options.maskImagePath,
         MaskImageInsets: options.maskImageInsets,
+        CornerRadius: options.cornerRadius,
     };
     return Vibrancy.UpdateView(buffer, viewOptions);
 }
@@ -53,6 +55,7 @@ var assignOptions = function (dimensions, effectOptions) {
         effectState: effectOptions.effectState,
         maskImagePath: effectOptions.maskImagePath,
         maskImageInsets: effectOptions.maskImageInsets,
+        cornerRadius: 0.0,
     };
     return viewOptions;
 };
