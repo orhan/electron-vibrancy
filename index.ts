@@ -1,14 +1,14 @@
 var Vibrancy = require("bindings")("Vibrancy");
 import { BrowserWindow } from "electron";
 
-interface Dimensions {
+export interface Dimensions {
   x: number;
   y: number;
   width: number;
   height: number;
 }
 
-interface EffectOptions {
+export interface EffectOptions {
   material?: string;
   resizeMask?: number;
   viewId?: number;
