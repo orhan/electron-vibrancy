@@ -116,16 +116,15 @@ namespace Vibrancy {
         return viewId;
     }
 
-    bool VibrancyHelper::UpdateView(unsigned char *buffer, v8::Local<v8::Array> options) {
+    bool VibrancyHelper::UpdateView(unsigned char *buffer, int viewId, v8::Local<v8::Array> options) {
         NSView *view = *reinterpret_cast<NSView **>(buffer);
-
         ViewOptions viewOptions = GetOptions(options);
 
-        if (viewOptions.ViewId == -1) {
+        if (viewId == -1) {
             return false;
         }
 
-        NSVisualEffectView *vibrantView = views_[viewOptions.ViewId];
+        NSVisualEffectView *vibrantView = views_[viewId];
 
         if (!vibrantView) {
             return false;
@@ -178,24 +177,12 @@ namespace Vibrancy {
             [vibrantView.layer setCornerRadius:viewOptions.CornerRadius];
         }
         
-        [vibrantView setFrame:NSMakeRect(viewOptions.X,
-                                        viewOptions.Y,
-                                        viewOptions.Width,
-                                        viewOptions.Height)];
-                                
-
+        [vibrantView setFrame:NSMakeRect(viewOptions.X, viewOptions.Y, viewOptions.Width, viewOptions.Height)];                                
         return true;
     }
 
-    bool VibrancyHelper::RemoveView(unsigned char *buffer, v8::Local<v8::Array> options) {
+    bool VibrancyHelper::RemoveView(unsigned char *buffer, int viewId) {
         bool result = false;
-        V8Value vView = Nan::Get(options, Nan::New<v8::String>("ViewId").ToLocalChecked()).ToLocalChecked();
-
-        if (vView->IsNull() || !vView->IsInt32()) {
-            return result;
-        }
-
-        int viewId = vView->Int32Value(Nan::GetCurrentContext()).ToChecked();
 
         if (viewId == -1 || viewId > static_cast<int>(views_.size())) {
             return result;
@@ -296,7 +283,6 @@ namespace Vibrancy {
         viewOptions.Height = 0;
         viewOptions.X = 0;
         viewOptions.Y = 0;
-        viewOptions.ViewId = -1;
         viewOptions.Material = "appearance-based";
         viewOptions.EffectState = "follow-window";
         viewOptions.MaskImagePath = "";
@@ -310,7 +296,6 @@ namespace Vibrancy {
         V8Value vSize = Nan::Get(options, Nan::New<v8::String>("Size").ToLocalChecked()).ToLocalChecked();
 
         V8Value vAutoResizeMask = Nan::Get(options, Nan::New<v8::String>("ResizeMask").ToLocalChecked()).ToLocalChecked();
-        V8Value vViewId = Nan::Get(options, Nan::New<v8::String>("ViewId").ToLocalChecked()).ToLocalChecked();
         V8Value vCornerRadius = Nan::Get(options, Nan::New<v8::String>("CornerRadius").ToLocalChecked()).ToLocalChecked();
         V8Value vMaterial = Nan::Get(options, Nan::New<v8::String>("Material").ToLocalChecked()).ToLocalChecked();
         V8Value vEffectState = Nan::Get(options, Nan::New<v8::String>("EffectState").ToLocalChecked()).ToLocalChecked();
@@ -325,10 +310,6 @@ namespace Vibrancy {
         if (!vEffectState->IsNull() && vEffectState->IsString()) {
             v8::String::Utf8Value value(v8::Isolate::GetCurrent(), vEffectState->ToString(Nan::GetCurrentContext()).ToLocalChecked());
             viewOptions.EffectState = std::string(*value);
-        }
-
-        if (!vViewId->IsNull() && vViewId->IsInt32()) {
-            viewOptions.ViewId = vViewId->Int32Value(Nan::GetCurrentContext()).ToChecked();
         }
 
         if (!vSize->IsUndefined() && !vSize->IsNull()) {
@@ -402,7 +383,7 @@ namespace Vibrancy {
         return viewOptions;
     }
 
-    bool VibrancyHelper::DisableVibrancy(unsigned char *windowHandleBuffer) {
+    bool VibrancyHelper::DisableVibrancy() {
         if (views_.size() > 0) {
             for (size_t i = 0; i < views_.size(); ++i) {
                 NSView *viewToRemove = views_[i];

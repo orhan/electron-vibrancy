@@ -41,13 +41,11 @@ function AddView(buffer, options: Options) {
 }
 
 function RemoveView(buffer, viewId: number) {
-  var viewOptions = { ViewId: viewId };
-  return Vibrancy.RemoveView(buffer, viewOptions);
+  return Vibrancy.RemoveView(buffer, viewId);
 }
 
-function UpdateView(buffer, options: Options) {
+function UpdateView(buffer, viewId: number, options: Options) {
   var viewOptions = {
-    ViewId: options.viewId,
     Material: options.material,
     Position: { x: options.x, y: options.y },
     Size: { width: options.width, height: options.height },
@@ -57,11 +55,12 @@ function UpdateView(buffer, options: Options) {
     MaskImageInsets: options.maskImageInsets,
     CornerRadius: options.cornerRadius,
   };
-  return Vibrancy.UpdateView(buffer, viewOptions);
+
+  return Vibrancy.UpdateView(buffer, viewId, viewOptions);
 }
 
-function DisableVibrancy(buffer) {
-  Vibrancy.SetVibrancy(false, buffer);
+function DisableVibrancy() {
+  Vibrancy.DisableVibrancy();
 }
 
 const assignOptions = (
@@ -126,17 +125,18 @@ const electronVibrancy = {
   },
   updateView: function (
     window: BrowserWindow,
+    viewId: number,
     dimensions: Dimensions,
     effectOptions: EffectOptions
   ) {
     var nativeOptions: Options = assignOptions(dimensions, effectOptions);
-    return UpdateView(window.getNativeWindowHandle(), nativeOptions);
+    return UpdateView(window.getNativeWindowHandle(), viewId, nativeOptions);
   },
   removeView: function (window: BrowserWindow, viewId: number) {
     return RemoveView(window.getNativeWindowHandle(), viewId);
   },
-  disableVibrancy: function (window: BrowserWindow) {
-    return DisableVibrancy(window.getNativeWindowHandle());
+  disableVibrancy: function () {
+    return DisableVibrancy();
   },
 };
 

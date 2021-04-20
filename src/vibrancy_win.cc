@@ -26,7 +26,6 @@
 
 #include "./VibrancyHelper.h"
 
-
 #pragma comment(lib, "dwmapi.lib")
 
 namespace Vibrancy {
@@ -36,6 +35,7 @@ namespace Vibrancy {
         int nColor;
         int nAnimationId;
     };
+    
     struct WINCOMPATTRDATA {
         int nAttribute;
         PVOID pData;
@@ -65,13 +65,9 @@ namespace Vibrancy {
         if (IsWindows10()) {
             const HINSTANCE hModule = LoadLibrary(TEXT("user32.dll"));
             if (hModule) {
-                typedef BOOL(WINAPI*pSetWindowCompositionAttribute)(HWND,
-                    WINCOMPATTRDATA*);
-                const pSetWindowCompositionAttribute
-                    SetWindowCompositionAttribute =
-                    (pSetWindowCompositionAttribute)GetProcAddress(
-                        hModule,
-                        "SetWindowCompositionAttribute");
+                typedef BOOL(WINAPI*pSetWindowCompositionAttribute)(HWND, WINCOMPATTRDATA*);
+                const pSetWindowCompositionAttribute SetWindowCompositionAttribute =
+                    (pSetWindowCompositionAttribute)GetProcAddress(hModule, "SetWindowCompositionAttribute");
 
                 // Only works on Win10
                 if (SetWindowCompositionAttribute) {
@@ -100,35 +96,28 @@ namespace Vibrancy {
                 result = true;
             }
         }
+        
         return result;
     }
 
-    VibrancyHelper::VibrancyHelper() {
+    VibrancyHelper::VibrancyHelper() { }
+
+    bool VibrancyHelper::DisableVibrancy() {
+        return false;
     }
 
-    bool VibrancyHelper::DisableVibrancy(unsigned char* windowHandleBuffer) {
-        uint32_t handle =
-            *reinterpret_cast<uint32_t*>(windowHandleBuffer);
-        HWND hwnd = (HWND)handle;
-        return SetBlurBehind(hwnd, false);
-    }
-
-    int32_t VibrancyHelper::AddView(unsigned char* buffer,
-        v8::Local<v8::Array> options) {
-        uint32_t handle =
-            *reinterpret_cast<uint32_t*>(buffer);
+    int32_t VibrancyHelper::AddView(unsigned char* buffer, v8::Local<v8::Array> options) {
+        uint32_t handle = *reinterpret_cast<uint32_t*>(buffer);
         HWND hwnd = (HWND)handle;
         return SetBlurBehind(hwnd, true);
     }
 
-    // These are here so compiling doesnt fail.
-    bool VibrancyHelper::UpdateView(unsigned char* buffer,
-        v8::Local<v8::Array> options) {
+    // These are here so compiling doesn't fail.
+    bool VibrancyHelper::UpdateView(unsigned char* buffer, int viewId, v8::Local<v8::Array> options) {
         return false;
     }
 
-    bool VibrancyHelper::RemoveView(unsigned char* buffer,
-        v8::Local<v8::Array> options) {
+    bool VibrancyHelper::RemoveView(unsigned char* buffer, int viewId) {
         return false;
     }
 }  // namespace Vibrancy
