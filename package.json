@@ -4,20 +4,20 @@
   "description": "Enable blurring the back of your transparent BrowserWindow using this simple module.",
   "main": "index.js",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "chai-as-promised": "^6.0.0",
-    "coffee-script": "^1.12.6",
-    "coffeelint": "^1.16.0",
-    "electron": "^9.1.0",
-    "mocha": "^3.4.1",
-    "node-gyp": "^7.0.0",
-    "node-pre-gyp": "^0.15.0",
-    "spectron": "^3.6.4"
+    "chai": "4.3.7",
+    "chai-as-promised": "7.1.1",
+    "coffee-script": "1.12.7",
+    "coffeelint": "2.1.0",
+    "electron": "22.1.0",
+    "mocha": "10.2.0",
+    "spectron": "19.0.0"
   },
   "dependencies": {
-    "bindings": "^1.5.0",
-    "nan": "^2.14.1",
-    "typescript": "^4.2.4"
+    "bindings": "1.5.0",
+    "nan": "2.17.0",
+    "node-gyp": "9.3.1",
+    "node-pre-gyp": "0.17.0",
+    "typescript": "4.9.5"
   },
   "scripts": {
     "test-spectron": "mocha --compilers coffee:coffee-script/register ./spec/vibrancy-spec.coffee",
