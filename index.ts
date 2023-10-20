@@ -13,6 +13,8 @@ export interface EffectOptions {
   resizeMask?: number;
   viewId?: number;
   effectState?: string;
+  blendingMode?: string;
+  isEmphasized?: boolean;
   cornerRadius?: number;
   maskImagePath?: string;
   maskImageInsets?: {
@@ -32,6 +34,8 @@ function AddView(buffer, options: Options) {
     Size: { width: options.width, height: options.height },
     ResizeMask: options.resizeMask,
     EffectState: options.effectState,
+    BlendingMode: options.blendingMode,
+    IsEmphasized: options.isEmphasized,
     MaskImagePath: options.maskImagePath,
     MaskImageInsets: options.maskImageInsets,
     CornerRadius: options.cornerRadius,
@@ -51,6 +55,8 @@ function UpdateView(buffer, viewId: number, options: Options) {
     Size: { width: options.width, height: options.height },
     ResizeMask: options.resizeMask,
     EffectState: options.effectState,
+    BlendingMode: options.blendingMode,
+    IsEmphasized: options.isEmphasized,
     MaskImagePath: options.maskImagePath,
     MaskImageInsets: options.maskImageInsets,
     CornerRadius: options.cornerRadius,
@@ -81,6 +87,20 @@ const assignOptions = (
     effectOptions.effectState = "follow-window";
   }
 
+  if (
+    effectOptions.blendingMode === null ||
+    typeof effectOptions.blendingMode === "undefined"
+  ) {
+    effectOptions.blendingMode = "behind-window";
+  }
+
+  if (
+    effectOptions.isEmphasized === null ||
+    typeof effectOptions.isEmphasized === "undefined"
+  ) {
+    effectOptions.isEmphasized = false;
+  }
+
   var resizeMask = 2; //auto resize on both axis
 
   var viewOptions: Options = {
@@ -91,6 +111,8 @@ const assignOptions = (
     y: dimensions.y,
     resizeMask,
     effectState: effectOptions.effectState,
+    blendingMode: effectOptions.blendingMode,
+    isEmphasized: effectOptions.isEmphasized,
     maskImagePath: effectOptions.maskImagePath,
     maskImageInsets: effectOptions.maskImageInsets,
     cornerRadius: effectOptions.cornerRadius,

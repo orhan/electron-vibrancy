@@ -8,6 +8,7 @@ function AddView(buffer, options) {
         Size: { width: options.width, height: options.height },
         ResizeMask: options.resizeMask,
         EffectState: options.effectState,
+        BlendingMode: options.blendingMode,
         MaskImagePath: options.maskImagePath,
         MaskImageInsets: options.maskImageInsets,
         CornerRadius: options.cornerRadius,
@@ -24,6 +25,7 @@ function UpdateView(buffer, viewId, options) {
         Size: { width: options.width, height: options.height },
         ResizeMask: options.resizeMask,
         EffectState: options.effectState,
+        BlendingMode: options.blendingMode,
         MaskImagePath: options.maskImagePath,
         MaskImageInsets: options.maskImageInsets,
         CornerRadius: options.cornerRadius,
@@ -42,6 +44,10 @@ var assignOptions = function (dimensions, effectOptions) {
         typeof effectOptions.effectState === "undefined") {
         effectOptions.effectState = "follow-window";
     }
+    if (effectOptions.blendingMode === null ||
+        typeof effectOptions.blendingMode === "undefined") {
+        effectOptions.blendingMode = "behind-window";
+    }
     var resizeMask = 2; //auto resize on both axis
     var viewOptions = {
         material: effectOptions.material,
@@ -51,6 +57,7 @@ var assignOptions = function (dimensions, effectOptions) {
         y: dimensions.y,
         resizeMask: resizeMask,
         effectState: effectOptions.effectState,
+        blendingMode: effectOptions.blendingMode,
         maskImagePath: effectOptions.maskImagePath,
         maskImageInsets: effectOptions.maskImageInsets,
         cornerRadius: effectOptions.cornerRadius,

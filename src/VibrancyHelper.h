@@ -46,6 +46,7 @@ namespace Vibrancy {
                 double CornerRadius;
                 std::string Material;
                 std::string EffectState;
+                std::string BlendingMode;
                 std::string MaskImagePath;
                 int MaskImageInsetTop;
                 int MaskImageInsetLeft;
@@ -55,6 +56,7 @@ namespace Vibrancy {
             ViewOptions GetOptions(v8::Local<v8::Array> options);
             NSVisualEffectMaterial GetVibrancyType(std::string material);
             NSVisualEffectState GetEffectState(std::string effectState);
+            NSVisualEffectBlendingMode GetBlendingMode(std::string blendingMode);
             std::map<int, NSVisualEffectView* > views_;
             int viewIndex_;
         #endif

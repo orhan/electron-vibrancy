@@ -70,7 +70,6 @@ namespace Vibrancy {
                                                                  viewOptions.Width,
                                                                  viewOptions.Height)];
 
-        [vibrantView setBlendingMode:NSVisualEffectBlendingModeBehindWindow];
 
         if (viewOptions.ResizeMask == 0) {
             [vibrantView setAutoresizingMask:NSViewWidthSizable];
@@ -87,6 +86,11 @@ namespace Vibrancy {
         
         NSVisualEffectState effectState = GetEffectState(viewOptions.EffectState);
         [vibrantView setState:effectState];
+        
+        NSVisualEffectBlendingMode blendingMode = GetBlendingMode(viewOptions.BlendingMode);
+        [vibrantView setBlendingMode:blendingMode];
+        
+        [vibrantView setEmphasized:YES];
         
         if (!viewOptions.MaskImagePath.empty()) {
             NSString *maskFile = [NSString stringWithCString:viewOptions.MaskImagePath.c_str() encoding:[NSString defaultCStringEncoding]];
@@ -159,6 +163,9 @@ namespace Vibrancy {
         
         NSVisualEffectState effectState = GetEffectState(viewOptions.EffectState);
         [vibrantView setState:effectState];
+        
+        NSVisualEffectBlendingMode blendingMode = GetBlendingMode(viewOptions.BlendingMode);
+        [vibrantView setBlendingMode:blendingMode];
         
         if (!viewOptions.MaskImagePath.empty()) {
             NSString *maskFile = [NSString stringWithCString:viewOptions.MaskImagePath.c_str() encoding:[NSString defaultCStringEncoding]];
@@ -275,7 +282,19 @@ namespace Vibrancy {
         
         return visualEffectState;
     }
-
+    
+    NSVisualEffectBlendingMode VibrancyHelper::GetBlendingMode(std::string blendingMode) {
+        NSVisualEffectBlendingMode visualBlendingMode = NSVisualEffectBlendingModeBehindWindow;
+        
+        if (blendingMode == "behind-window") {
+            visualBlendingMode = NSVisualEffectBlendingModeBehindWindow;
+        } else if (blendingMode == "within-window") {
+            visualBlendingMode = NSVisualEffectBlendingModeWithinWindow;
+        }
+        
+        return visualBlendingMode;
+    }
+    
     VibrancyHelper::ViewOptions VibrancyHelper::GetOptions(v8::Local<v8::Array> options) {
         VibrancyHelper::ViewOptions viewOptions;
         viewOptions.ResizeMask = 2;
@@ -285,6 +304,7 @@ namespace Vibrancy {
         viewOptions.Y = 0;
         viewOptions.Material = "appearance-based";
         viewOptions.EffectState = "follow-window";
+        viewOptions.BlendingMode = "behind-window";
         viewOptions.MaskImagePath = "";
         viewOptions.MaskImageInsetTop = 0;
         viewOptions.MaskImageInsetLeft = 0;
@@ -299,6 +319,7 @@ namespace Vibrancy {
         V8Value vCornerRadius = Nan::Get(options, Nan::New<v8::String>("CornerRadius").ToLocalChecked()).ToLocalChecked();
         V8Value vMaterial = Nan::Get(options, Nan::New<v8::String>("Material").ToLocalChecked()).ToLocalChecked();
         V8Value vEffectState = Nan::Get(options, Nan::New<v8::String>("EffectState").ToLocalChecked()).ToLocalChecked();
+        V8Value vBlendingMode = Nan::Get(options, Nan::New<v8::String>("BlendingMode").ToLocalChecked()).ToLocalChecked();
         V8Value vMaskImagePath = Nan::Get(options, Nan::New<v8::String>("MaskImagePath").ToLocalChecked()).ToLocalChecked();
         V8Value vMaskImageInsets = Nan::Get(options, Nan::New<v8::String>("MaskImageInsets").ToLocalChecked()).ToLocalChecked();
 
@@ -310,6 +331,11 @@ namespace Vibrancy {
         if (!vEffectState->IsNull() && vEffectState->IsString()) {
             v8::String::Utf8Value value(v8::Isolate::GetCurrent(), vEffectState->ToString(Nan::GetCurrentContext()).ToLocalChecked());
             viewOptions.EffectState = std::string(*value);
+        }
+        
+        if (!vBlendingMode->IsNull() && vBlendingMode->IsString()) {
+            v8::String::Utf8Value value(v8::Isolate::GetCurrent(), vBlendingMode->ToString(Nan::GetCurrentContext()).ToLocalChecked());
+            viewOptions.BlendingMode = std::string(*value);
         }
 
         if (!vSize->IsUndefined() && !vSize->IsNull()) {
