@@ -2,36 +2,29 @@
     "targets": [
         {
             "target_name": "Vibrancy",
-            "sources": [],
+            "sources": [
+                "src/Common.h",
+                "src/Vibrancy.h",
+                "src/Vibrancy.mm",
+                "src/VibrancyHelper.h",
+                "src/Init.mm",
+                "src/vibrancy_win.cc",
+                "src/vibrancy_mac.mm",
+                "src/vibrancy_linux.cc",
+            ],
             'conditions':[
                 ['OS!="mac"', {
                     "sources!": [
-                        "src/Common.h",
-                        "src/Vibrancy.h",
-                        "src/Vibrancy.mm",
-                        "src/VibrancyHelper.h",
-                        "src/Init.mm",
-                        "src/vibrancy_mac.cc",
                         "src/vibrancy_mac.mm",
                     ]
                 }],
                 ['OS!="win"', {
                     "sources!": [
-                        "src/Common.h",
-                        "src/Vibrancy.h",
-                        "src/Vibrancy.mm",
-                        "src/VibrancyHelper.h",
-                        "src/Init.mm",
                         "src/vibrancy_win.cc"
                     ]
                 }],
                 ['OS!="linux"', {
                     "sources!": [
-                        "src/Common.h",
-                        "src/Vibrancy.h",
-                        "src/Vibrancy.mm",
-                        "src/VibrancyHelper.h",
-                        "src/Init.mm",
                         "src/vibrancy_linux.cc"
                     ]
                 }]
