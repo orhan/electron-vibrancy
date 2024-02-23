@@ -6,28 +6,28 @@
                 "src/Common.h",
                 "src/Vibrancy.h",
                 "src/VibrancyHelper.h",
+                "src/Init.mm",
                 "src/Init.cc",
+                "src/Vibrancy.mm",
                 "src/Vibrancy.cc",
                 "src/vibrancy_win.cc",
                 "src/vibrancy_mac.mm",
-                "src/vibrancy_linux.cc",
             ],
             'conditions':[
                 ['OS!="mac"', {
                     "sources!": [
+                        "src/Init.mm",
+                        "src/Vibrancy.mm",
                         "src/vibrancy_mac.mm",
                     ]
                 }],
                 ['OS!="win"', {
                     "sources!": [
+                        "src/Init.cc",
+                        "src/Vibrancy.cc",
                         "src/vibrancy_win.cc"
                     ]
                 }],
-                ['OS!="linux"', {
-                    "sources!": [
-                        "src/vibrancy_linux.cc"
-                    ]
-                }]
             ],
             "link_settings": {
                 "conditions":[

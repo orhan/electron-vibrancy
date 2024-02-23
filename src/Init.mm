@@ -22,3 +22,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 //----------------------------------------------------------------------------
+#include "./Common.h"
+#include "./Vibrancy.h"
+
+NAN_MODULE_INIT(InitAll) {
+    Vibrancy::Vibrancy::Init(target);
+}
+
+#if NODE_MAJOR_VERSION >= 10
+    NAN_MODULE_WORKER_ENABLED(Vibrancy, InitAll)
+#else
+    NODE_MODULE(Vibrancy, InitAll)
+#endif
