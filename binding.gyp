@@ -5,9 +5,9 @@
             "sources": [
                 "src/Common.h",
                 "src/Vibrancy.h",
-                "src/Vibrancy.mm",
                 "src/VibrancyHelper.h",
-                "src/Init.mm",
+                "src/Init.cc",
+                "src/Vibrancy.cc",
                 "src/vibrancy_win.cc",
                 "src/vibrancy_mac.mm",
                 "src/vibrancy_linux.cc",
